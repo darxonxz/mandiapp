@@ -25,7 +25,7 @@ data = response.json()
 # first 5 records
 new_df = pd.DataFrame(data["records"]).reset_index()
 new_df.head(2)
-
+new_df["arrival_date"] = pd.to_datetime(new_df["arrival_date"], errors="coerce")
 
 # In[2]:
 
@@ -45,5 +45,18 @@ if os.path.exists(DATA_FILE):
     
 else:
     final_df = new_df
+
+df_final.drop_duplicates(
+    subset=[
+        "state",
+        "district",
+        "market",
+        "commodity",
+        "variety",
+        "arrival_date"
+    ],
+    keep="last",
+    inplace=True
+)
 
 final_df.to_csv(DATA_FILE, index=False)
