@@ -44,7 +44,7 @@ filtered_df = df[
     (df['commodity'].isin(commodities)) &
     (df['variety'].isin(varieties)) &
     (df['grade'].isin(grades)) &
-    (df["year"].isin(year_filter)) &
+    (df["year"].isin(year)) &
     (df["month_name"].isin(month_filter))
 ]
 
@@ -196,6 +196,7 @@ commodity_count = filtered_df['commodity'].value_counts().reset_index()
 commodity_count.columns = ['commodity','count']
 fig5 = px.pie(commodity_count, names='commodity', values='count', title='Commodity Proportion')
 st.plotly_chart(fig5)
+
 
 
 
