@@ -21,8 +21,8 @@ df = pd.read_csv(FILE_PATH)
 
 df["arrival_date"] = pd.to_datetime(df["arrival_date"], errors="coerce")
 
-df["Year"] = df["arrival_date"].dt.year
-df["Month"] = df["arrival_date"].dt.month   # optional but useful
+df["year"] = df["arrival_date"].dt.year
+df["month"] = df["arrival_date"].dt.month   # optional but useful
 
 state = df.groupby('state').sum('modal_price')
 
@@ -196,4 +196,5 @@ commodity_count = filtered_df['commodity'].value_counts().reset_index()
 commodity_count.columns = ['commodity','count']
 fig5 = px.pie(commodity_count, names='commodity', values='count', title='Commodity Proportion')
 st.plotly_chart(fig5)
+
 
