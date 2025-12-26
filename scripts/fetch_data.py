@@ -46,7 +46,7 @@ if os.path.exists(DATA_FILE):
 else:
     final_df = new_df
 
-df_final.drop_duplicates(
+final_df.drop_duplicates(
     subset=[
         "state",
         "district",
@@ -60,3 +60,4 @@ df_final.drop_duplicates(
 )
 
 final_df.to_csv(DATA_FILE, index=False)
+
