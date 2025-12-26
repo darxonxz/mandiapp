@@ -11,7 +11,7 @@ url = "https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070" # 
 params = {
     "api-key": "579b464db66ec23bdd000001683b398a0bdd40066aefc6ace98749c7",
     "format": "json",
-    "limit": 500,
+    "limit": 10000,
     "offset": 0
 }
 
@@ -62,3 +62,4 @@ final_df.drop_duplicates(
 )
 
 final_df.to_csv(DATA_FILE, index=False)
+
