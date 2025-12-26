@@ -1,0 +1,12 @@
+mandiapp/
+│
+├── app.py                     ✅ Streamlit app
+├── requirements.txt           ✅ dependencies
+├── data/
+│   └── market_data_master.csv ✅ persistent data (via GitHub)
+├── scripts/
+│   └── fetch_data.py          ✅ scheduled extraction
+├── .github/
+│   └── workflows/
+│       └── update_data.yml    ✅ scheduler
+├── LICENSE
