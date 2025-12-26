@@ -159,10 +159,3 @@ commodity_count = filtered_df['commodity'].value_counts().reset_index()
 commodity_count.columns = ['commodity','count']
 fig5 = px.pie(commodity_count, names='commodity', values='count', title='Commodity Proportion')
 st.plotly_chart(fig5)
-
-
-
-
-
-
-
