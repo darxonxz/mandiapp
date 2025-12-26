@@ -24,6 +24,9 @@ data = response.json()
 
 # first 5 records
 new_df = pd.DataFrame(data["records"]).reset_index()
+# normalize column names
+new_df.columns = new_df.columns.str.strip().str.lower()
+
 new_df.head(2)
 new_df["arrival_date"] = pd.to_datetime(new_df["arrival_date"], errors="coerce")
 
@@ -60,4 +63,5 @@ final_df.drop_duplicates(
 )
 
 final_df.to_csv(DATA_FILE, index=False)
+
 
