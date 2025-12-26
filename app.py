@@ -37,7 +37,7 @@ commodities = st.sidebar.multiselect("Select Commodities", df['commodity'].uniqu
 varieties = st.sidebar.multiselect("Select Varieties", df['variety'].unique(), default=df['variety'].unique())
 grades = st.sidebar.multiselect("Select Grades", df['grade'].unique(), default=df['grade'].unique())
 year = st.sidebar.multiselect("Year", sorted(df["year"].dropna().unique()), default=sorted(df["year"].dropna().unique()))
-month = st.sidebar.multiselect("Month",sorted(df["month_name"].dropna().unique()),default=sorted(df["month_name"].dropna().unique()))
+month = st.sidebar.multiselect("Month",sorted(df["month"].dropna().unique()),default=sorted(df["month"].dropna().unique()))
 filtered_df = df[
     (df['state'].isin(states)) &
     (df['district'].isin(districts)) &
@@ -196,5 +196,6 @@ commodity_count = filtered_df['commodity'].value_counts().reset_index()
 commodity_count.columns = ['commodity','count']
 fig5 = px.pie(commodity_count, names='commodity', values='count', title='Commodity Proportion')
 st.plotly_chart(fig5)
+
 
 
