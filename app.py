@@ -112,11 +112,6 @@ fig_year = px.line(
 
 st.plotly_chart(fig_year, use_container_width=True)
 
-# DATA TABLE
-# -----------------------------
-st.subheader("📄 Filtered Data")
-st.dataframe(filtered_df, use_container_width=True)
-
 # ----------------- 6. Aggregations -----------------
 st.subheader("Aggregated Data by State & Commodity")
 agg_df = filtered_df.groupby(['state','commodity']).agg(
@@ -164,6 +159,7 @@ commodity_count = filtered_df['commodity'].value_counts().reset_index()
 commodity_count.columns = ['commodity','count']
 fig5 = px.pie(commodity_count, names='commodity', values='count', title='Commodity Proportion')
 st.plotly_chart(fig5)
+
 
 
 
