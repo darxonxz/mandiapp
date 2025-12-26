@@ -34,10 +34,14 @@ jobs:
       - name: Fetch latest mandi data
         run: python scripts/fetch_data.py
 
-      - name: Commit and push if data changed
+      - name: Commit and push
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
+
+          git status
           git add data/market_data_master.csv
-          git commit -m "Auto update mandi data" || echo "No changes"
+
+          git diff --cached --quiet && echo "No changes to commit" || git commit -m "Auto update mandi data"
           git push
+
