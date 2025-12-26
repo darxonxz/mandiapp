@@ -37,15 +37,13 @@ commodities = st.sidebar.multiselect("Select Commodities", df['commodity'].uniqu
 varieties = st.sidebar.multiselect("Select Varieties", df['variety'].unique(), default=df['variety'].unique())
 grades = st.sidebar.multiselect("Select Grades", df['grade'].unique(), default=df['grade'].unique())
 year = st.sidebar.multiselect("Year", sorted(df["year"].dropna().unique()), default=sorted(df["year"].dropna().unique()))
-month = st.sidebar.multiselect("Month",sorted(df["month"].dropna().unique()),default=sorted(df["month"].dropna().unique()))
 filtered_df = df[
     (df['state'].isin(states)) &
     (df['district'].isin(districts)) &
     (df['commodity'].isin(commodities)) &
     (df['variety'].isin(varieties)) &
     (df['grade'].isin(grades)) &
-    (df["year"].isin(year)) &
-    (df["month"].isin(month))
+    (df["year"].isin(year))
 ]
 
 # ----------------- 3. Dashboard Title -----------------
@@ -114,36 +112,6 @@ fig_year = px.line(
 
 st.plotly_chart(fig_year, use_container_width=True)
 
-# -----------------------------
-# MONTH-WISE REPORT
-# -----------------------------
-st.subheader("📆 Month-wise Price Report")
-
-monthly_report = (
-    filtered_df
-    .groupby(["year", "month", "month_name"])["modal_price"]
-    .mean()
-    .reset_index()
-    .sort_values("month")
-)
-
-fig_month = px.line(
-    monthly_report,
-    x="month_name",
-    y="modal_price",
-    color="year",
-    markers=True,
-    labels={
-        "modal_price": "Average Modal Price",
-        "month_name": "Month",
-        "year": "Year"
-    },
-    title="Month-wise Modal Price Trend by Year"
-)
-
-st.plotly_chart(fig_month, use_container_width=True)
-
-# -----------------------------
 # DATA TABLE
 # -----------------------------
 st.subheader("📄 Filtered Data")
@@ -196,6 +164,7 @@ commodity_count = filtered_df['commodity'].value_counts().reset_index()
 commodity_count.columns = ['commodity','count']
 fig5 = px.pie(commodity_count, names='commodity', values='count', title='Commodity Proportion')
 st.plotly_chart(fig5)
+
 
 
 
