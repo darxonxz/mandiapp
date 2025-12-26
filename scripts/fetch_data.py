@@ -23,7 +23,7 @@ print(response.status_code)
 data = response.json()
 
 # first 5 records
-new_df = pd.DataFrame(data["records"]).reset_index()
+new_df = pd.DataFrame(data["records"])
 # normalize column names
 new_df.columns = new_df.columns.str.strip().str.lower()
 
@@ -63,5 +63,6 @@ final_df.drop_duplicates(
 )
 
 final_df.to_csv(DATA_FILE, index=False)
+
 
 
