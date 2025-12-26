@@ -3,7 +3,6 @@
 
 # In[1]:
 
-
 import requests
 import pandas as pd
 import streamlit as st
@@ -47,15 +46,15 @@ filtered_df = df[
 ]
 
 # ----------------- 3. Dashboard Title -----------------
-st.title("📊 Indian Market Prices Dashboard")
+st.title("📊 Indian APMC Market Prices Dashboard")
 st.markdown("Interactive dashboard with all metrics, aggregations, and visualizations.")
 
 # ----------------- 4. Display Filtered Table -----------------
-st.subheader("Filtered Market Data")
+st.subheader("Filtered Market Data in ₹")
 st.dataframe(filtered_df)
 
 # ----------------- 5. Price Metrics -----------------
-st.subheader("Price Metrics / Calculations")
+st.subheader("Price Metrics / Calculations in ₹")
 
 metrics_df = pd.DataFrame({
     "Metric": ["Min Price", "Max Price", "Modal Price Mean", "Modal Price Median",
@@ -76,7 +75,8 @@ st.table(metrics_df)
 # -----------------------------
 # KPI Metrics
 # -----------------------------
-st.subheader("📌 Key Metrics")
+
+st.subheader("📌 Key Metrics in ₹")
 
 col1, col2, col3, col4 = st.columns(4)
 
@@ -88,7 +88,8 @@ col4.metric("Avg Modal Price", round(filtered_df["modal_price"].mean(), 2))
 # -----------------------------
 # YEAR-WISE REPORT
 # -----------------------------
-st.subheader("📅 Year-wise Price Report")
+
+st.subheader("📅 Year-wise Price Report ₹")
 
 yearly_report = (
     filtered_df
@@ -107,13 +108,13 @@ fig_year = px.line(
         "year": "Year",
         "variable": "Price Type"
     },
-    title="Year-wise Average Price Trend"
+    title="Year-wise Average Price Trend ₹"
 )
 
 st.plotly_chart(fig_year, use_container_width=True)
 
 # ----------------- 6. Aggregations -----------------
-st.subheader("Aggregated Data by State & Commodity")
+st.subheader("Aggregated Data by State & Commodity ₹")
 agg_df = filtered_df.groupby(['state','commodity']).agg(
     Min_Price=('min_price','min'),
     Max_Price=('max_price','max'),
@@ -126,9 +127,11 @@ st.dataframe(agg_df)
 st.subheader("Visualizations")
 
 # 7a: Commodity-wise Modal Prices Bar Chart
+
 fig1 = px.bar(filtered_df, x="commodity", y="modal_price", color="state", text="modal_price",
               labels={"modal_price":"Modal Price", "commodity":"Commodity", "state":"State"},
               title="Commodity-wise Modal Prices by State")
+
 fig1.update_layout(xaxis_title="commodity", yaxis_title="modal price")
 st.plotly_chart(fig1)
 
@@ -140,21 +143,21 @@ fig2 = px.line(state_avg, x="state", y="modal_price", markers=True,
 st.plotly_chart(fig2)
 
 # 7c: Box Plot for Price Distribution
-st.subheader("Price Distribution by Commodity")
+st.subheader("Price Distribution by Commodity ₹")
 fig3 = px.box(filtered_df, x="commodity", y="modal_price", color="state",
               labels={"modal_price":"Modal Price", "commodity":"Commodity", "state":"State"},
               title="Price Distribution by Commodity")
 st.plotly_chart(fig3)
 
 # 7d: Scatter Plot Min vs Max Prices
-st.subheader("Min vs Max Prices Scatter Plot")
+st.subheader("Min vs Max Prices Scatter Plot ₹")
 fig4 = px.scatter(filtered_df, x="min_price", y="max_price", color="commodity", size="modal_price",
                   hover_data=["state","district","market"], labels={"min_price":"Min Price","max_price":"Max Price"},
                   title="Scatter of Min vs Max Prices by Commodity")
 st.plotly_chart(fig4)
 
 # 7e: Pie Chart of Commodities Proportion
-st.subheader("Commodity Share in Selected Data")
+st.subheader("Commodity Share in Selected Data ₹")
 commodity_count = filtered_df['commodity'].value_counts().reset_index()
 commodity_count.columns = ['commodity','count']
 fig5 = px.pie(commodity_count, names='commodity', values='count', title='Commodity Proportion')
