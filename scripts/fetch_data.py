@@ -3,18 +3,20 @@ import requests
 import os
 import warnings
 with warnings.catch_warnings():
-    warnings.simplefilter("ignore")
-    warnings.warn("This is hidden")
+     warnings.simplefilter("ignore")
+     warnings.warn("This is hidden")
 
 url = "https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070" # mandi api
 
 params = {
     "api-key": "579b464db66ec23bdd000001683b398a0bdd40066aefc6ace98749c7",
     "format": "json",
-    "limit": 10000
+    "limit": 500,
+    "offset": 0
 }
 
-response = requests.get(url, params)
+response = requests.get(url, params=params, timeout=30)
+
 
 # Check status
 print(response.status_code)
@@ -29,10 +31,6 @@ new_df.columns = new_df.columns.str.strip().str.lower()
 
 new_df.head(2)
 new_df["arrival_date"] = pd.to_datetime(new_df["arrival_date"], errors="coerce")
-
-# In[2]:
-
-
 new_df.tail(2)
 
 
@@ -44,7 +42,8 @@ os.makedirs("data", exist_ok=True)
 # load old data
 if os.path.exists(DATA_FILE):
     old_df = pd.read_csv(DATA_FILE)
-    final_df = pd.concat([old_df, new_df], ignore_index=True)
+    df = pd.concat([old_df, new_df], ignore_index=True)
+    final_df = df.dropna(axis=1, how="all")
     
 else:
     final_df = new_df
@@ -63,6 +62,3 @@ final_df.drop_duplicates(
 )
 
 final_df.to_csv(DATA_FILE, index=False)
-
-
-
