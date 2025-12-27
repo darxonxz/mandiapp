@@ -43,7 +43,7 @@ filtered_df = df[
     (df['variety'].isin(varieties)) &
     (df['grade'].isin(grades)) &
     (df["year"].isin(year))
-]
+].sort_values(by = ["state", "commodity", "arrival_date"], ascending = ['True', 'True', 'True',])
 
 # ----------------- 3. Dashboard Title -----------------
 st.title("📊 Indian APMC Market Prices Dashboard")
@@ -51,7 +51,7 @@ st.markdown("Interactive dashboard with all metrics, aggregations, and visualiza
 
 # ----------------- 4. Display Filtered Table -----------------
 st.subheader("Filtered Market Data in ₹")
-st.dataframe(sorted(filtered_df))
+st.dataframe(filtered_df)
 
 # ----------------- 5. Price Metrics -----------------
 st.subheader("Price Metrics / Calculations in ₹")
@@ -162,4 +162,5 @@ commodity_count = filtered_df['commodity'].value_counts().reset_index()
 commodity_count.columns = ['commodity','count']
 fig5 = px.pie(commodity_count, names='commodity', values='count', title='Commodity Proportion')
 st.plotly_chart(fig5)
+
 
