@@ -128,11 +128,11 @@ st.subheader("Visualizations")
 
 # 7a: Commodity-wise Modal Prices Bar Chart
 
-fig1 = px.bar(filtered_df, x="commodity", y="modal_price", color="state", text="modal_price",
+fig1 = px.bar(filtered_df, x="modal_price", y="commodity", color="state", text="modal_price",
               labels={"modal_price":"Modal Price", "commodity":"Commodity", "state":"State"},
               title="Commodity-wise Modal Prices by State")
 
-fig1.update_layout(xaxis_title="commodity", yaxis_title="modal price")
+fig1.update_layout(xaxis_title="modal_price", yaxis_title="commodity")
 st.plotly_chart(fig1)
 
 # 7b: State-wise Average Modal Price Line Chart
@@ -144,7 +144,7 @@ st.plotly_chart(fig2)
 
 # 7c: Box Plot for Price Distribution
 st.subheader("Price Distribution by Commodity ₹")
-fig3 = px.box(filtered_df, x="commodity", y="modal_price", color="state",
+fig3 = px.box(filtered_df, x="modal_price", y="commodity", color="state",
               labels={"modal_price":"Modal Price", "commodity":"Commodity", "state":"State"},
               title="Price Distribution by Commodity")
 st.plotly_chart(fig3)
@@ -156,11 +156,26 @@ fig4 = px.scatter(filtered_df, x="min_price", y="max_price", color="commodity", 
                   title="Scatter of Min vs Max Prices by Commodity")
 st.plotly_chart(fig4)
 
-# 7e: Pie Chart of Commodities Proportion
-st.subheader("Commodity Share in Selected Data ₹")
-commodity_count = filtered_df['commodity'].value_counts().reset_index()
-commodity_count.columns = ['commodity','count']
-fig5 = px.pie(commodity_count, names='commodity', values='count', title='Commodity Proportion')
-st.plotly_chart(fig5)
+# 7e: Heat_Map of Commodities Proportion
+st.subheader("🔥 Commodity vs State Heatmap (Record Count)")
+
+heatmap_df = (
+    filtered_df
+    .groupby(["state", "commodity"])
+    .size()
+    .reset_index(name="count")
+)
+
+fig = px.density_heatmap(
+    heatmap_df,
+    x="commodity",
+    y="state",
+    z="count",
+    color_continuous_scale="YlOrRd",
+    title="Commodity Distribution Across States"
+)
+
+st.plotly_chart(fig, use_container_width=True)
+
 
 
