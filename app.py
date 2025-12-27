@@ -26,7 +26,7 @@ df["month"] = df["arrival_date"].dt.month   # optional but useful
 state = df.groupby('state').sum('modal_price')
 
 # ----------------- 2. Sidebar Filters -----------------
-st.set_page_config(page_title="Indian Mandi Price Dashboard", layout="wide")
+st.set_page_config(page_title="Indian Mandi Price Dashboard", layout="wide", initial_sidebar_state = 'expanded')
 
 st.sidebar.header("Filters")
 
@@ -176,6 +176,7 @@ fig = px.density_heatmap(
 )
 
 st.plotly_chart(fig, use_container_width=True)
+
 
 
 
