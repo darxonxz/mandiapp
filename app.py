@@ -43,7 +43,7 @@ filtered_df = df[
     (df['variety'].isin(varieties)) &
     (df['grade'].isin(grades)) &
     (df["year"].isin(year))
-].sort_values(by = ["state", "commodity", "arrival_date"], ascending = ['True', 'True', 'True',])
+].sort_values(by = ["state", "commodity", "arrival_date"], ascending = [True, True, True])
 
 # ----------------- 3. Dashboard Title -----------------
 st.title("📊 Indian APMC Market Prices Dashboard")
@@ -176,6 +176,7 @@ fig = px.density_heatmap(
 )
 
 st.plotly_chart(fig, use_container_width=True)
+
 
 
 
