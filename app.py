@@ -171,11 +171,12 @@ fig = px.density_heatmap(
     x="commodity",
     y="state",
     z="count",
-    color_continuous_scale="YlOrRd",
+    color_continuous_scale="Turbo",
     title="Commodity Distribution Across States"
 )
 
 st.plotly_chart(fig, use_container_width=True)
+
 
 
 
