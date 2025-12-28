@@ -2,42 +2,41 @@ name: Update Mandi Data
 
 on:
   schedule:
-    - cron: "0 8,16,20 * * *" # 8AM, 4PM, 8PM UTC
+    - cron: "0 8,16,20 * * *"   # 8AM, 4PM, 8PM UTC
   workflow_dispatch:
 
 permissions:
   contents: write
-  id-token: write
 
 jobs:
   update-data:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Fetch latest data
-        env:
-          DATA_GOV_API_KEY: ${{ secrets.DATA_GOV_API_KEY }}
-        run: python scripts/fetch_data.py
-
+      # 1️⃣ Checkout repository FIRST
       - uses: actions/checkout@v4
 
+      # 2️⃣ Setup Python
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
+      # 3️⃣ Install dependencies
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      # 4️⃣ Fetch latest mandi data
       - name: Fetch latest data
         env:
-          MANDI_API_KEY: ${{ secrets.MANDI_API_KEY }}
+          DATA_GOV_API_KEY: ${{ secrets.DATA_GOV_API_KEY }}
         run: python scripts/fetch_data.py
 
+      # 5️⃣ Commit & push ONLY if file changed
       - name: Commit & push changes
         run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "actions@github.com"
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
           git add data/market_data_master.csv
           git diff --cached --quiet || git commit -m "Auto update mandi data"
           git push
