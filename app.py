@@ -13,13 +13,68 @@ import warnings
 # ----------------- 1. Load_data -----------------
 import os
 import time
-FILE_PATH = (
-    "https://raw.githubusercontent.com/"
-    "darxonxz/mandiapp/main/data/market_data_master.csv"
-    f"?v={int(time.time())}"
-)
+# put near top of app.py (replace your current file-read logic)
+import os, time, requests
+from datetime import datetime, timezone
 
-df = pd.read_csv(FILE_PATH)
+FILE_PATH = os.path.join("data", "market_data_master.csv")
+GITHUB_OWNER = "darxonxz"   # <<<< set this
+GITHUB_REPO = "mandiapp"              # <<<< set this
+GITHUB_PATH = "data/market_data_master.csv"
+
+def get_github_latest_commit_date(owner, repo, path):
+    """Return datetime (UTC) of latest commit that touched `path`, or None."""
+    api_url = f"https://api.github.com/repos/{owner}/{repo}/commits"
+    params = {"path": path, "per_page": 1}
+    try:
+        r = requests.get(api_url, params=params, timeout=20)
+        r.raise_for_status()
+        commits = r.json()
+        if commits:
+            date_str = commits[0]['commit']['committer']['date']  # ISO 8601
+            return datetime.fromisoformat(date_str.replace("Z", "+00:00")).astimezone(timezone.utc)
+    except Exception as e:
+        print("GitHub commit check failed:", e)
+    return None
+
+def download_raw_github(owner, repo, path, dest):
+    raw_url = f"https://raw.githubusercontent.com/{owner}/{repo}/main/{path}"
+    try:
+        r = requests.get(raw_url, timeout=30)
+        r.raise_for_status()
+        open(dest, "wb").write(r.content)
+        return True
+    except Exception as e:
+        print("Failed to download raw file:", e)
+        return False
+
+# ensure data dir exists
+os.makedirs(os.path.dirname(FILE_PATH), exist_ok=True)
+
+# check local mtime
+local_mtime = None
+if os.path.exists(FILE_PATH) and os.path.getsize(FILE_PATH) > 0:
+    local_mtime = datetime.fromtimestamp(os.path.getmtime(FILE_PATH), tz=timezone.utc)
+
+# check remote commit
+remote_commit_dt = get_github_latest_commit_date(GITHUB_OWNER, GITHUB_REPO, GITHUB_PATH)
+
+# if remote is newer (or local missing), download
+if remote_commit_dt and (local_mtime is None or remote_commit_dt > local_mtime):
+    print("Remote CSV newer -> downloading from GitHub")
+    ok = download_raw_github(GITHUB_OWNER, GITHUB_REPO, GITHUB_PATH, FILE_PATH)
+    if ok:
+        # update file timestamp to reflect remote commit (optional)
+        os.utime(FILE_PATH, (time.time(), remote_commit_dt.timestamp()))
+
+# final read (fall back to local if download failed)
+import pandas as pd
+if os.path.exists(FILE_PATH) and os.path.getsize(FILE_PATH) > 0:
+    df = pd.read_csv(FILE_PATH)
+else:
+    # as a fallback try one-time raw fetch with cache-buster
+    raw = f"https://raw.githubusercontent.com/{GITHUB_OWNER}/{GITHUB_REPO}/main/{GITHUB_PATH}?v={int(time.time())}"
+    df = pd.read_csv(raw)
 
 # In[4]:
 
@@ -181,6 +236,7 @@ fig = px.density_heatmap(
 )
 
 st.plotly_chart(fig, use_container_width=True)
+
 
 
 
