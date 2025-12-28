@@ -46,14 +46,7 @@ commodities = st.sidebar.multiselect("Select Commodities", df['commodity'].uniqu
 varieties = st.sidebar.multiselect("Select Varieties", df['variety'].unique(), default=df['variety'].unique())
 grades = st.sidebar.multiselect("Select Grades", df['grade'].unique(), default=df['grade'].unique())
 year = st.sidebar.multiselect("Year", sorted(df["year"].dropna().unique()), default=sorted(df["year"].dropna().unique()))
-filtered_df = df[
-    (df['state'].isin(states)) &
-    (df['district'].isin(districts)) &
-    (df['commodity'].isin(commodities)) &
-    (df['variety'].isin(varieties)) &
-    (df['grade'].isin(grades)) &
-    (df["year"].isin(year))
-].sort_values(by = ["state", "commodity", "arrival_date"], ascending = [True, True, True])
+filtered_df = df.sort_values(by = ["state", "commodity", "arrival_date"], ascending = [True, True, True])
 
 # ----------------- 3. Dashboard Title -----------------
 st.title("📊 Indian APMC Market Prices Dashboard")
@@ -186,5 +179,6 @@ fig = px.density_heatmap(
 )
 
 st.plotly_chart(fig, use_container_width=True)
+
 
 
