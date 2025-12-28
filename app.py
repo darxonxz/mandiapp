@@ -13,7 +13,7 @@ import warnings
 # ----------------- 1. Load_data -----------------
 import os
 
-FILE_PATH = os.path.join("data", "market_data_master.csv")
+FILE_PATH = f"https://raw.githubusercontent.com/{darxonxz}/{mandiapp}/main/{data}?v={int(time.time())}"
 df = pd.read_csv(FILE_PATH)
 
 # In[4]:
@@ -176,6 +176,7 @@ fig = px.density_heatmap(
 )
 
 st.plotly_chart(fig, use_container_width=True)
+
 
 
 
