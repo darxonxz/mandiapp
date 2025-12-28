@@ -1,65 +1,53 @@
 import pandas as pd
 import requests
 import os
-import warnings
-with warnings.catch_warnings():
-     warnings.simplefilter("ignore")
-     warnings.warn("This is hidden")
 
-url = "https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070" # mandi api
+url = "https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070"
 
-params = {
-    "api-key": "579b464db66ec23bdd000001683b398a0bdd40066aefc6ace98749c7",
-    "format": "json",
-    "limit": 10000,
-    "offset": 0
-}
+API_KEY = "YOUR_API_KEY"
+LIMIT = 10000
+offset = 0
+all_records = []
 
-response = requests.get(url, params=params, timeout=30)
+while True:
+    params = {
+        "api-key": API_KEY,
+        "format": "json",
+        "limit": LIMIT,
+        "offset": offset
+    }
 
+    r = requests.get(url, params=params, timeout=30)
+    r.raise_for_status()
+    data = r.json().get("records", [])
 
-# Check status
-print(response.status_code)
+    if not data:
+        break
 
-# Convert JSON → Python object
-data = response.json()
+    all_records.extend(data)
+    offset += LIMIT
 
-# first 5 records
-new_df = pd.DataFrame(data["records"])
-# normalize column names
+print(f"Fetched records: {len(all_records)}")
+
+new_df = pd.DataFrame(all_records)
 new_df.columns = new_df.columns.str.strip().str.lower()
-
-new_df.head(2)
 new_df["arrival_date"] = pd.to_datetime(new_df["arrival_date"], errors="coerce")
-new_df.tail(2)
-
 
 DATA_FILE = "data/market_data_master.csv"
 os.makedirs("data", exist_ok=True)
 
-# In[3]:
-
-# load old data
 if os.path.exists(DATA_FILE):
     old_df = pd.read_csv(DATA_FILE)
     df = pd.concat([old_df, new_df], ignore_index=True)
-    final_df = df.dropna(axis=1, how="all")
-    
 else:
-    final_df = new_df
+    df = new_df
 
-final_df.drop_duplicates(
-    subset=[
-        "state",
-        "district",
-        "market",
-        "commodity",
-        "variety",
-        "arrival_date"
-    ],
+df.drop_duplicates(
+    subset=["state", "district", "market", "commodity", "variety", "arrival_date"],
     keep="last",
     inplace=True
 )
 
-final_df.to_csv(DATA_FILE, index=False)
+df.to_csv(DATA_FILE, index=False)
 
+print("Final rows:", len(df))
