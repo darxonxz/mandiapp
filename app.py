@@ -12,9 +12,7 @@ import warnings
 
 # ----------------- 1. Load_data -----------------
 import os
-
-FILE_PATH = import time
-
+import time
 FILE_PATH = (
     "https://raw.githubusercontent.com/"
     "darxonxz/mandiapp/main/data/market_data_master.csv"
@@ -183,6 +181,7 @@ fig = px.density_heatmap(
 )
 
 st.plotly_chart(fig, use_container_width=True)
+
 
 
 
