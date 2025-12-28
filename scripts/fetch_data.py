@@ -2,12 +2,19 @@ import pandas as pd
 import requests
 import os
 
-url = "https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070"
+API_KEY = os.getenv("DATA_GOV_API_KEY")  # 👈 from GitHub Secrets
 
-API_KEY = "YOUR_API_KEY"
+if not API_KEY:
+    raise RuntimeError("DATA_GOV_API_KEY not set")
+
+url = "https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070"
 LIMIT = 10000
 offset = 0
 all_records = []
+
+headers = {
+    "User-Agent": "mandi-data-pipeline/1.0"
+}
 
 while True:
     params = {
@@ -17,17 +24,21 @@ while True:
         "offset": offset
     }
 
-    r = requests.get(url, params=params, timeout=30)
-    r.raise_for_status()
-    data = r.json().get("records", [])
+    r = requests.get(url, params=params, headers=headers, timeout=30)
 
+    if r.status_code == 403:
+        raise RuntimeError("403 Forbidden – API key invalid or quota exceeded")
+
+    r.raise_for_status()
+
+    data = r.json().get("records", [])
     if not data:
         break
 
     all_records.extend(data)
     offset += LIMIT
 
-print(f"Fetched records: {len(all_records)}")
+print("Fetched records:", len(all_records))
 
 new_df = pd.DataFrame(all_records)
 new_df.columns = new_df.columns.str.strip().str.lower()
