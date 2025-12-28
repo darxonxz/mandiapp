@@ -28,7 +28,7 @@ df = load_data()
 
 df.columns = df.columns.str.strip().str.lower()
 
-df["arrival_date"] = pd.to_datetime(df["arrival_date"], errors="coerce")
+df["arrival_date"] = pd.to_datetime(df["arrival_date"], errors="coerce", dayfirst = True)
 df["year"] = df["arrival_date"].dt.year
 df["month"] = df["arrival_date"].dt.month
 
@@ -179,6 +179,7 @@ fig = px.density_heatmap(
 )
 
 st.plotly_chart(fig, use_container_width=True)
+
 
 
 
