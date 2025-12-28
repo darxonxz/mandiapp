@@ -26,7 +26,11 @@ def load_data():
 
 df = load_data()
 
+df.columns = df.columns.str.strip().str.lower()
 
+df["arrival_date"] = pd.to_datetime(df["arrival_date"], errors="coerce")
+df["year"] = df["arrival_date"].dt.year
+df["month"] = df["arrival_date"].dt.month
 
 # ----------------- 2. Sidebar Filters -----------------
 st.set_page_config(page_title="Indian Mandi Price Dashboard", layout="wide", initial_sidebar_state = 'expanded')
@@ -182,4 +186,5 @@ fig = px.density_heatmap(
 )
 
 st.plotly_chart(fig, use_container_width=True)
+
 
