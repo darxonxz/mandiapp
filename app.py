@@ -114,7 +114,7 @@ fig_year = px.line(
     title="Year-wise Average Price Trend ₹"
 )
 
-st.plotly_chart(fig_year, use_container_width=True)
+st.plotly_chart(fig_year, width=True)
 
 # ----------------- 6. Aggregations -----------------
 st.subheader("Aggregated Data by State & Commodity ₹")
@@ -178,7 +178,7 @@ fig = px.density_heatmap(
     title="Commodity Distribution Across States"
 )
 
-st.plotly_chart(fig, use_container_width=True)
+st.plotly_chart(fig, width=True)
 
 
 
